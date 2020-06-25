@@ -1,0 +1,90 @@
+
+/*
+ * CAPITULO DOS PUERTOS DIGITALES
+ * TAREA II
+ * COD.4: MANEJO DE PUERTOS CONFIGURADOS COMO ENTRADA
+ */
+//declarar variables para cada periferico 
+const int bng=4;
+const int bnt=7;
+const int led1=8;
+const int led2=9;
+const int led3=10;
+const int led4=11;
+const int led5=12;
+const int led6=13;
+//declar variables para contadores del bucle
+int r;
+int p;
+
+void setup()
+{
+pinMode(led1,OUTPUT);
+pinMode(led2,OUTPUT);
+pinMode(led3,OUTPUT);
+pinMode(led4,OUTPUT);
+pinMode(led5,OUTPUT);
+pinMode(led6,OUTPUT);
+pinMode(bng,INPUT);
+pinMode(bnt,INPUT);
+}
+void loop()
+{
+//PRIMER BOTON presionar una vez se enciende los 6 leds y luego se apagan
+if(digitalRead(bnt)==HIGH)// condición que active el boton en bajo
+ {
+      for(r=0;r<8;r++)//ejecuta hasta la condicion final
+      {
+        digitalWrite(led1,HIGH);
+        delay(300);
+        digitalWrite(led2,HIGH);
+        delay(300);
+        digitalWrite(led3,HIGH);
+        delay(300);
+        digitalWrite(led4,HIGH);
+        delay(300);
+        digitalWrite(led5,HIGH);
+        delay(300);
+        digitalWrite(led6,HIGH);
+        delay(300);
+         digitalWrite(led1,LOW);
+         delay(300);
+         digitalWrite(led2,LOW);
+         delay(300);
+         digitalWrite(led3,LOW);
+         delay(300);
+         digitalWrite(led4,LOW);
+         delay(300);
+         digitalWrite(led5,LOW);
+         delay(300);
+         digitalWrite(led6,LOW);
+         delay(300);
+         }
+     
+      }
+
+//SEGUNDO BOTON. Apagar en secuencia 162 y 534 respectivamente 10 veces
+  if(digitalRead(bng)==HIGH)// condición que active el boton en bajo
+  {
+      for(p=0;p<9;p++)
+      {
+        digitalWrite(led1,HIGH);
+        digitalWrite(led6,HIGH);
+        delay(300);
+        digitalWrite(led1,LOW);
+        digitalWrite(led6,LOW);
+        delay(300);
+        digitalWrite(led2,HIGH);
+        digitalWrite(led5,HIGH);
+        delay(300);
+        digitalWrite(led2,LOW);
+        digitalWrite(led5,LOW);
+        delay(300);
+        digitalWrite(led3,HIGH);
+        digitalWrite(led4,HIGH);
+        delay(300);
+        digitalWrite(led3,LOW);
+        digitalWrite(led4,LOW);    
+        }
+      }
+}
