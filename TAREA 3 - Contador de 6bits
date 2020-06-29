@@ -1,0 +1,50 @@
+/* UNIVERSIDAD TECNICA DEL NORTE
+ *      FICA/CITEL-CIERCOM
+ *      SISTEMAS EMBEBIDOS
+ *      
+ * ESTUDIANTE:RODRIGUEZ V. MÓNICA J.
+ * TEMA: CONTADOR DE 6 BITS
+ */
+
+//DECLARACIÓN DE VARIABLES PARA CADA PERIFÉRICO
+const int led1=8; //led de menor peso
+const int led2=9;
+const int led4=10;
+const int led8=11;
+const int led16=12;
+const int led32=13; //led de mayor peso
+const int bt=6; //boton para aumeneto de variable
+//INICIALIZACION DE VARIABLES PARA BUCLE Y CONDICION QUE REGULA
+int cont=0; 
+int r;
+int p;
+int condi;
+
+void setup() 
+{
+  for(r=8;r<=13;r++)// BUCLE QUE LIMITA LEDS HA USAR EN CADA REPETICION 
+  {//DETERMINAR TERMINALES DE SALIDA O ENTRADA
+  pinMode(r, OUTPUT);
+  pinMode (bt,INPUT);
+  }
+}
+void loop() 
+{//DETERMINAR QUE EL BOTON TRABAJE EN ENCENDIO = HIGH, HASTA QUE SE CUMPLA EL CICLO
+  if (digitalRead(bt)==HIGH)//
+  {
+  cont++; // VARIABLE QUE LIMITA A EVALUAR CADA PISCION DEL LED
+    if (cont>32) // BUCLE QUE DETERMINA HASTA DONDE LLEGA EL PULSADOR A CONTAR Y VUELVE A CER CERO
+    {
+      cont=0;
+    }
+    while (digitalRead (bt)==HIGH)
+    {  
+    }
+    p=cont; 
+    for (condi=8;condi<=13;condi++)
+    {  
+    digitalWrite (condi,p%2); //CONDICION PARA EVALUAR CADA POSICION EN EL LED
+    p=p/2;
+    }
+  }
+}
