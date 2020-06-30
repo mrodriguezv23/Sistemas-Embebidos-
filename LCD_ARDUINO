@@ -1,0 +1,33 @@
+/*UNIVERSIDAD TECNICA DEL NORTE
+ * CAPITULO II: LCD 16X2
+ * VISUALIZAR DATOS EN LA LCD
+ * RODRIGUEZ V. MONICA J.
+ * 
+ */
+//ADICIONAR LIBRERIA
+#include<LiquidCrystal.h>
+
+//inicializar LCD
+LiquidCrystal lcd (13,12,11,10,9,8);//pines RS, Eable, D0,D1,D2,D3
+int i;
+
+void setup() 
+{
+lcd.begin(16,2); //uso de toda la lcd para enviar el mensaje
+}
+
+void loop() 
+{
+lcd.setCursor(0,1);//ubicacion inicial del mensaje
+lcd.print("MR");//mensaje
+delay(400);
+//condiciones que evaluan
+for(i=25;i>0;i--) // para que la palabra ingrese por la izquierda y salga por la derecha evaluar desde una poscion fuera de la de la pantalla LCD
+{
+lcd.setCursor(i,0);//elegir posicion de inicio y la recorera em las diferentes columnas
+lcd.print("ARDUINO");
+lcd.autoscroll();//funcion que permite el desplazamiento por completo de la palabra
+delay(300);
+lcd.clear();
+}
+}
