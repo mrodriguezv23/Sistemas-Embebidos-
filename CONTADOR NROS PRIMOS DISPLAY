@@ -1,0 +1,145 @@
+/*UNIVERSIDAD TECNICA DEL NORTE
+FICA-CITEL-CIERCOM
+
+RODRIGUEZ V. MONICA J.
+TEMA: CONTADOR NROS PRIMOS DISPLAY
+ * 
+ */
+
+const int D=11;
+const int C=10;
+const int B=9;
+const int A=8;
+const int decenas=13;
+const int unidades=12;
+const int bt=6;//como el nro ya tiene decenas y unidades hay q dividirlo, ej 15 el 1 en dec y el 5 en uni
+int dec; 
+int uni;
+int num;
+int x;
+
+void setup() 
+{
+  // pines de salida
+  pinMode(D, OUTPUT);
+  pinMode(C, OUTPUT);
+  pinMode(B, OUTPUT);
+  pinMode(A, OUTPUT);
+  pinMode(decenas,OUTPUT);
+  pinMode(unidades,OUTPUT);
+  pinMode(bt,INPUT);
+}
+
+void loop() 
+{
+  if(digitalRead(bt)==HIGH)
+  { 
+   delay(300);
+   //condicion para saber si un numero es primo o no
+   for(num=1;num<100;num++)
+   {
+    boolean a=true; //si un nro es primo evalua en la condicion de 2do for
+    for(x=2;x<num;x++)
+    {
+      if(num%x==0)
+      {
+      a=false;//si un nro no es primo
+      }
+     } 
+   if(a)//evalua el nro primo para indicar en el led
+   {
+    //imprimir datos en led solo primos sus unidades y decenas
+dec=num/10;//ej 15/10=1,5=>1 // 5/10=0,5=>0
+uni=num-(dec*10);// ej anterior 15-(1)*10=5 //5-(0)*10=5
+   }
+digitalWrite(decenas,HIGH);
+digitalWrite(unidades,LOW);
+//imprimie valor decenas
+segmentos(dec);
+delay(250);
+digitalWrite(decenas,LOW);
+digitalWrite(unidades,HIGH);
+//imprimir valor unidades
+segmentos(uni);
+delay(250);
+    
+  }   
+ }
+}
+ //creacion de metodos para reutilizar el codigo
+ //propio metodo
+void segmentos (int i) //void no retorna ningun valor cuando finalice, lleno los parentesis para definir parametro de entrada
+{
+switch(i)
+  {
+    case 0:
+    digitalWrite(D,LOW);
+    digitalWrite(C,LOW);
+    digitalWrite(B,LOW);
+    digitalWrite(A,LOW);
+    break;
+    
+    case 1:
+    digitalWrite(D,HIGH);
+    digitalWrite(C,LOW);
+    digitalWrite(B,LOW);
+    digitalWrite(A,LOW);
+    break;
+    
+    case 2:
+    digitalWrite(D,LOW);
+    digitalWrite(C,HIGH);
+    digitalWrite(B,LOW);
+    digitalWrite(A,LOW);
+    break;
+    
+    case 3:
+    digitalWrite(D,HIGH);
+    digitalWrite(C,HIGH);
+    digitalWrite(B,LOW);
+    digitalWrite(A,LOW);
+    break;
+    
+    case 4:
+    digitalWrite(D,LOW);
+    digitalWrite(C,LOW);
+    digitalWrite(B,HIGH);
+    digitalWrite(A,LOW);
+    break;
+    
+    case 5:
+    digitalWrite(D,HIGH);
+    digitalWrite(C,LOW);
+    digitalWrite(B,HIGH);
+    digitalWrite(A,LOW);
+    break;
+    
+    case 6:
+    digitalWrite(D,LOW);
+    digitalWrite(C,HIGH);
+    digitalWrite(B,HIGH);
+    digitalWrite(A,LOW);
+    break;
+    
+    case 7:
+    digitalWrite(D,HIGH);
+    digitalWrite(C,HIGH);
+    digitalWrite(B,HIGH);
+    digitalWrite(A,LOW);
+    break;
+    
+    case 8:
+    digitalWrite(D,LOW);
+    digitalWrite(C,LOW);
+    digitalWrite(B,LOW);
+    digitalWrite(A,HIGH);
+    break;
+    
+    case 9:
+    digitalWrite(D,HIGH);
+    digitalWrite(C,LOW);
+    digitalWrite(B,LOW);
+    digitalWrite(A,HIGH);
+    break;
+  }
+}
