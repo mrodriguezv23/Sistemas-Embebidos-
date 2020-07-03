@@ -1,0 +1,150 @@
+/*
+ * UNIVERSIDAD TECNICA DEL NORTE
+ * FICA/CITEL-CIERCOM
+ * 
+ * RODRIGUEZ V. MONICA J.
+ *TEMA: ENCENDER LED POR CADA SWITCH
+ * 
+ * 
+ *  
+ */
+
+ #include <Wire.h>
+char caracter;
+const int bt1=8;
+const int bt2=9;
+const int bt3=10;
+const int bt4=11;
+int i;
+void setup() {
+  Wire.begin();
+  Serial.begin(9600);
+  pinMode(bt1,INPUT);
+  pinMode(bt2,INPUT);
+  pinMode(bt3,INPUT);
+  pinMode(bt4,INPUT);
+}
+void loop() {
+  if(Serial.available()>0){
+    caracter=Serial.read();
+  }
+  if(digitalRead (bt1)==HIGH){
+    i=1;
+  }
+  if(digitalRead (bt1==LOW && i==1)){
+    delay(600);
+    i=1-i;
+    if(i==0){
+      caracter='X';
+    }
+  }
+  if(digitalRead (bt2)==HIGH){
+    i=1;
+  }
+  if(digitalRead (bt2==LOW && i==1)){
+    delay(600);
+    i=1-i;
+    if(i==0){
+      caracter='Y';
+    }
+  }
+  if(digitalRead (bt3)==HIGH){
+    i=1;
+  }
+  if(digitalRead (bt3==LOW && i==1)){
+    delay(600);
+    i=1-i;
+    if(i==0){
+      caracter='Z';
+    }
+  }
+  if(digitalRead (bt4)==HIGH){
+    i=1;
+  }
+  if(digitalRead (bt4==LOW && i==1)){
+    delay(600);
+    i=1-i;
+    if(i==0){
+      caracter='H';
+    }
+  }
+  
+  Serial.println(String("Led encendido: "));
+  Serial.println(caracter); 
+  Wire.beginTransmission(15);
+  Wire.write(caracter);
+  Wire.endTransmission();
+}
+
+//**********S L A V E*************
+
+//INCLUIR LIBRERIA PARA COMUNICACION SERIAL
+#include <Wire.h>
+char caracter;
+const int bt1=8;
+const int bt2=9;
+const int bt3=10;
+const int bt4=11;
+int i;
+void setup() {
+  Wire.begin();
+  Serial.begin(9600);
+  pinMode(bt1,INPUT);
+  pinMode(bt2,INPUT);
+  pinMode(bt3,INPUT);
+  pinMode(bt4,INPUT);
+}
+void loop() {
+  if(Serial.available()>0){
+    caracter=Serial.read();
+  }
+  if(digitalRead (bt1)==HIGH){
+    i=1;
+  }
+#include <Wire.h>
+char caracter;
+const int led1=8;
+const int led2=9;
+const int led3=10;
+const int led4=11;
+
+void setup() {
+  pinMode (led1,OUTPUT);
+  pinMode (led2,OUTPUT);
+  pinMode (led3,OUTPUT);
+  pinMode (led4,OUTPUT);
+  Wire.begin(15);
+  Wire.onReceive(receiveEvent);
+  Serial.begin(9600);
+}
+
+void loop() {
+}
+void receiveEvent (int bytes){
+  while(Wire.available()){
+    caracter=Wire.read();
+    
+    if(caracter=='X'){
+      digitalWrite (led1,LOW);
+      digitalWrite (led2,HIGH);
+      digitalWrite (led3,LOW);
+      digitalWrite (led4,LOW);
+    }else if(caracter=='Y'){
+      digitalWrite (led1,LOW);
+      digitalWrite (led2,LOW);
+      digitalWrite (led3,HIGH);
+      digitalWrite (led4,LOW);
+    }else if(caracter=='Z'){
+      digitalWrite (led1,LOW);
+      digitalWrite (led2,LOW);
+      digitalWrite (led3,LOW);
+      digitalWrite (led4,HIGH);
+    }else if(caracter=='H'){
+      digitalWrite (led1,HIGH);
+      digitalWrite (led2,LOW);
+      digitalWrite (led3,LOW);
+      digitalWrite (led4,LOW);
+    }
+  }
+  Serial.println(caracter);
+}
