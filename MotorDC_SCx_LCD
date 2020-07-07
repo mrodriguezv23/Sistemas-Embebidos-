@@ -1,0 +1,43 @@
+/* UNIVERSIDAD TECNICA DEL NORTE
+ *  FICA-CITEL/CIERCOM
+ *  
+ *  RODRIGUEZ MONICA
+ *  TARA NRO8-Motor DC, velocidades por comunicacion serial y datos en LCD16x2
+ */
+
+#include <LiquidCrystal.h> //libreria oara hacer uso de la LCD
+LiquidCrystal lcd(13,12,11,10,9,8);//datos que usaremos del LCD
+//VARIABLES
+int motor=6;//valor posicion de las velocidades del motor
+void setup() 
+{
+Serial.begin(9600);
+Serial.print("Ingrese una de las velocidades del motor entre 0->6: ");
+lcd.begin(16,2);
+}
+void loop() 
+{
+
+  if(Serial.available())//Habilitamos puerto de comunicacion 
+  {
+    char conversor=Serial.read();//obtenemos el dato de entrada por teclado
+    if(conversor>='0' && conversor<='6')//condicion para evaluar la velocidad dentro de un limite
+    {
+    int velocidad=map(conversor,'0','6',0,255);//cambio de escala
+    analogWrite(motor,velocidad);//velocidad establecida por el terminal
+    lcd.setCursor(0,0);//posicion para imprimir en la LCD
+    lcd.print("V.Motr mn:0-Mx:6");//El mj de la LCD
+    lcd.setCursor(0,1);//posicion nuevo mensaje
+    lcd.print("ESTADO ACTUAL: ");//segundo mj 
+    lcd.setCursor(15,1);//posicion ultimo mj
+    lcd.print(conversor);//mensaje final
+    delay(10);
+    }
+    else
+        {
+        Serial.println("Error valor de velocidad ");
+        Serial.println("El valor debe ir desde una valocidad minima 0 a una velocidad maxima 6");
+        Serial.print("Ingrese una de las velocidades del motor: ");
+        }
+  }
+}
