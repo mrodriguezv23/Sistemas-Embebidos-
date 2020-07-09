@@ -1,0 +1,97 @@
+/*UNIVERSIDAD TECNICA DEL NORTE
+ * FICA-CITEL/CIERCOM
+ * 
+ * RODRIGUEZ MONICA
+ * TAREA 9
+ */
+
+
+
+#include<LiquidCrystal.h> //uso de la libreria para la LCD
+LiquidCrystal lcd {13,12,11,10,9,8};//definir puertos de uso de LCD en el arduino
+//variables programa
+int act1=0;
+int act2=0;
+int cont0;
+int cont1;
+int cont2;
+int cont3;
+String dato;
+int dato1;
+int dato2;
+
+void setup ()
+{
+Serial.begin(9600);
+lcd.begin(16,2);
+attachInterrupt(0,evaluacion,FALLING);
+Serial.println("SUMADOR RESTADOR - ON");
+Serial.println("Igresar primer valor de un nro natural: ");
+}
+//METODO DE EVALUAR CADA ESTADO DEL SISTEMA
+void evaluacion ()
+{
+  act1++;
+  switch (act1)
+    {
+    case 1:
+    Serial.println(" ");
+    dato1=0;
+    dato2=0;
+    break;
+    case 2:
+    Serial.println(" ");
+    break;
+    case 3:
+    Serial.print("SUMADOR RESTADOR - OFF");
+    break;
+    default:
+    lcd.clear();
+    cont1=0;    
+    }
+}
+
+void loop()
+{
+if (act1==1)
+  {
+  if(Serial.available()>0 && cont1==0)
+    {
+    dato=Serial.readString();
+    dato1=dato.toInt();
+    if(dato1>0)
+      {
+      Serial.println("Ingresar segundo valor de un nro natural: ");
+      cont1=1;
+      }
+    }
+
+  if(Serial.available()>0&&cont2==0)
+    {
+    dato=Serial.readString();
+    dato2=dato.toInt();
+    if(dato1>0&&dato2>0);
+      {
+      Serial.print(" ");
+      Serial.println("SUMA");
+      Serial.println(dato1+dato2);
+      lcd.setCursor(0,0);
+      lcd.println("SUMA  : ");
+      lcd.setCursor(1,1);
+      lcd.print(dato1+dato2);
+      cont2=1;
+      }  
+     }
+  }
+  if(act1==2&&cont3==0)
+    {
+      Serial.print(" ");
+      Serial.println("RESTA");
+      Serial.print(dato1-dato2);
+      lcd.setCursor(10,0);
+      lcd.println("RESTA   : ");
+      lcd.setCursor(11,1);
+      lcd.print(dato1-dato2);
+      cont3=1;
+    }
+}
