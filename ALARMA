@@ -1,0 +1,212 @@
+/*UNIVERSIDAD TECNICA DEL NORTE
+ * FICA/CITEL/CIERCOM
+ * 
+ * RODRIGUEZ MONICA
+ * TAREA 10 Y 11 
+ * 
+ */
+
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+int Max = 10;
+int Min = 9;
+int Set = 8;
+
+boolean sSet = false; //variables para usar pulsadores
+boolean sMax = false;
+boolean sMin = false;
+
+int led = 7;
+
+
+int h = 0; //guardo en ints la hora, minutos y segundos
+int m = 0;
+int s = 0;
+
+int ha = 0; //horas y minutos de la alarma
+int ma = 0;
+
+int timer = 0; //variable para ir sumando
+int pos = 0; //posicion para los casos del SET
+int periodo = 600; //tiempo en cambiar de 1 segundo a otro
+unsigned long anterior = 0;
+
+
+void setup() {
+  // put your setup code here, to run once:
+
+  lcd.begin(16, 2);
+  pinMode(Max, INPUT);
+  pinMode(Min, INPUT);
+  pinMode(Set, INPUT);
+  pinMode(led, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  controlReloj();
+  reloj();
+  alarma();
+}
+
+void controlReloj() {
+  lcd.setCursor(0, 0);
+
+  //control boton max
+  if (digitalRead(Max) == LOW) {
+    sMax = true;
+  } else if (sMax == true) {
+    timer++;
+    sMax = false;
+  }
+
+  //control boton min
+  if (digitalRead(Min) == LOW) {
+    sMin = true;
+  } else if (sMin == true) {
+    timer--;
+    sMin = false;
+  }
+
+  //control boton set
+  if (digitalRead(Set) == LOW) {
+    sSet = true;
+  } else if (sSet == true) {
+    pos++;
+    sSet = false;
+    lcd.clear();
+  }
+
+  //mensaje de tipo configuracion
+
+  switch (pos) {
+    case 0 :
+      lcd.print("Reloj   Alarma");
+      break;
+
+    case 1 :
+      lcd.print("Reloj Minutos");
+      m += timer;
+      timer = 0;
+      break;
+
+    case 2:
+      lcd.print("Reloj Hora");
+      h += timer;
+      timer = 0;
+      break;
+
+    case 3:
+      lcd.print("Alarma Minutos");
+      ma = ma + timer;
+      timer = 0;
+      break;
+
+    case 4 :
+      lcd.print("Alarma Hora");
+      ha = ha + timer;
+      timer = 0;
+      break;
+
+    case 5:
+      lcd.print("Alarma OFF");
+      digitalWrite(led, LOW);
+      break;
+
+    case 6: pos = 0;
+      break;
+
+  }
+
+}
+
+void reloj() {
+  if (millis() > anterior + periodo) {
+    anterior = millis();
+    s++;
+    Serial.print("Reloj ");
+    Serial.print(h);
+    Serial.print(":");
+    Serial.print(m);
+    Serial.print(":");
+    Serial.println(s);
+  }  if (s > 59) {
+    m++;
+    s = 0;
+  }
+
+  if (m > 59) {
+    h++;
+    m = 0;
+  }
+
+  if (h > 23) {
+    h = 0;
+  }
+
+  lcd.setCursor(0, 1);
+
+  if (h < 10) {
+    lcd.print("0");
+    lcd.print(h);
+  } else {
+    lcd.print(h);
+  }
+  lcd.print(":");
+
+
+  ///minutos
+
+  if (m < 10) {
+    lcd.print("0");
+    lcd.print(m);
+  }
+  else {
+    lcd.print(m);
+  }
+  lcd.print(":");
+
+
+  ///segundos
+
+  if (s < 10) {
+    lcd.print("0");
+    lcd.print(s);
+
+  }
+  else {
+    lcd.print(s);
+  }
+
+
+////hora alarma
+  lcd.print("--");
+  if (ha < 10) {
+    lcd.print("0");
+    lcd.print(ha);
+  }
+  else {
+    lcd.print(ha);
+  }
+  
+  lcd.print(":");
+  if (ma<10) {
+    lcd.print("0");
+    lcd.print(ma);
+  }
+  else {
+    lcd.print(ma);
+  }
+  lcd.print(":0");
+}
+
+void alarma() {
+
+  if (h == ha && m == ma) {
+    digitalWrite(led, HIGH);
+  }
+
+}
