@@ -1,0 +1,47 @@
+/*UNIVERSIDAD TECNICA DEL NORTE
+ * FICA/CITEL-CIERCOM
+ * 
+ * RODRIGUEZ MONICA
+ * 
+ * TAREA 12: REINICIO DE UN SISTEMA CADA 28 SEG
+ */
+//incluir librerias a usar
+#include<MsTimer2.h>
+#include<avr/wdt.h>
+//inicializar variables
+int cont=0;
+int minit=0;
+int sec=0;
+
+void setup() 
+{
+Serial.begin(9600);
+MsTimer2::set(100,sistemaON);
+MsTimer2::start();
+Serial.println("Inicio del sistema");
+}
+
+void loop() 
+{
+
+}
+
+void sistemaON()
+{
+Serial.println(minit++);
+(sec++);
+  if(minit==29)
+  {
+  minit=0;
+  }
+  if(sec==29)
+  {
+  sec=0;
+  minit++;
+  }
+  if(cont==28)
+  {
+  wdt_disable();
+  wdt_enable(WDTO_8S);
+  }
+}
