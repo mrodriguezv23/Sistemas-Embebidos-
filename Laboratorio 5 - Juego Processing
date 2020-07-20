@@ -1,0 +1,220 @@
+//UNIVERSIDAD TECNICA DEL NORTE
+//FICA/CITEL-CIERCOM
+//ESTUDIANTE: RODRIGUEZ MONICA
+//TEMA: SIMULAR JUEGO EN PROCESSING
+//NOMBRE JUEGO: SBMUX-GAME
+
+import ddf.minim.*;//LIBRERIA PARA REPROD. SONIDOS
+Minim gestor;//INICIALIZAR OBJETO PARA GESTIONAR LOS SONIDOS
+AudioPlayer musica_fondo;//SONIDO DE FONDO, DURANTE TODO  EL JUEGO
+AudioSample sonido_punto;//SONIDO DETERMINADO A CADA PUNTO OBTENIDO
+AudioSample sonido_game_over;//SONIDO DETERMINADO JUEGO PERDIDO
+
+//Variables Globales
+int posx = 0;//posicion de X
+int posy = 0;//posicion de Y
+int punts = 0;//variable que almacena puntos  
+int repinta = 1;//variable que multiplica los puntitos de color
+int tamany = 50;//tamaño de los puntitos de color para nivel uno 
+int jugar = 1;//contador de inicio del juego
+int cont=5;//contador de iteracciones en el nivel 1, necesarias para pasar al siguiente nivel
+int n2cont=10;//contador de iteracciones en el nivel 2, necesarias para ganar juego
+int tcont=0;//contador de iteracciones global
+int n2tamany = 30;//tamaño de los puntitos de color para nivel dos
+
+
+//Configurar pantalla inicio del juego
+void setup()
+{
+  size(800,600);
+  //background(0,0,0);
+  cursor(CROSS); 
+  gestor=new Minim(this);
+  musica_fondo=gestor.loadFile("SIRIO.wav");
+  sonido_punto=gestor.loadSample("Sonido_punto.mp3");
+  sonido_game_over=gestor.loadSample("Sonido_game_over.mp3");
+  sonido_punto.setGain(-30);
+  sonido_game_over.setGain(-10);
+  musica_fondo.setGain(-20);
+  musica_fondo.loop(0);
+
+}
+
+//Reiteracion de las puntitos de color en pantalla
+void draw ()
+{
+  if (jugar==1 && repinta==1)
+  {
+    dibujar_formas();
+  }
+    if (jugar==1 && repinta==1)
+  {
+
+    n2_dibujar_formas();
+  }
+}
+
+
+void dibujar_formas()
+{
+if(cont>1)
+{
+    PImage Fondo;
+  Fondo=loadImage("fondo4.jpg");
+  image(Fondo,0,0);
+ //background(0,0,50);
+  //Formes Despiste
+  for(int i=0; i<=punts; i++)
+  {
+    fill(floor(random(0,255)),floor(random(0,255)),floor(random(0,255)));
+    ellipse(floor(random(50,750)),floor(random(100,550)),tamany,tamany);
+  }
+
+  //Forma Objectiu
+  posx=floor(random(50,650));
+  posy=floor(random(100,340));
+  fill(255,0,0);
+  ellipse(posx,posy,tamany,tamany);
+  //nivel data
+  textAlign(RIGHT);
+  fill(255,0,0);
+  textSize(18);
+  text("Nivel Uno :) ",500,30);
+  //Escriu puntuacio
+  fill(255,0,0);
+  textAlign(CENTER);
+  textSize(18);
+  text("Puntos: " + (punts), 250, 30);
+  //Escribir tiempo
+//  tiempo=millis()/1000;
+  fill(255,0,0);
+  textAlign(LEFT);
+  textSize(18);
+  text("Tiempo: " + millis()/1000 , 20, 30);
+  //Prepara nova pantalla
+
+  repinta=0;
+
+cont--;
+textAlign(RIGHT);
+textSize(18);  
+text("Siguiente nivel en: "+cont,750,30); 
+}
+
+}
+
+
+
+void n2_dibujar_formas()
+{
+if(n2cont>1)
+{
+    PImage Fondo;
+  Fondo=loadImage("fondo3.jpg");
+  image(Fondo,0,0);
+ //background(0,0,50);
+  //Formes Despiste
+  for(int i=0; i<=punts; i++)
+  {
+    fill(floor(random(0,255)),floor(random(0,255)),floor(random(0,255)));
+    ellipse(floor(random(50,750)),floor(random(100,550)),n2tamany,n2tamany);
+  }
+
+  //Forma Object 1
+  posx=floor(random(50,650));
+  posy=floor(random(100,340));
+  fill(255,0,0);
+  ellipse(posx,posy,n2tamany,n2tamany);
+  //nivel data
+  textAlign(RIGHT);
+  fill(255,0,0);
+  textSize(18);
+  text("Nivel Dos :) ",500,30);
+  //Escriu puntuacio
+  fill(255,0,0);
+  textAlign(CENTER);
+  textSize(18);
+  text("Puntos: " + (punts), 250, 30);
+  //Escribir tiempo
+  fill(255,0,0);
+  textAlign(LEFT);
+  textSize(18);
+  text("Tiempo: " + millis()/1000, 20, 30);
+  //Prepara nova pantalla
+
+  repinta=0;
+
+n2cont--;
+textAlign(RIGHT);
+textSize(18);  
+text("Ganando en menos de: "+n2cont,750,30); 
+}
+else
+{
+musica_fondo.pause();
+textAlign(CENTER);
+textSize(50);  
+text("GANASTE",380,350); 
+noFill();
+fill(255);
+textAlign(CENTER);
+textSize(20);  
+text("PRESIONA CUALQUIER TECLA PARA VOLVER A JUGAR",380,590);      
+
+}
+
+
+
+}
+
+
+void mouseClicked()//metodo de accion a traves del mouse
+{
+  if (jugar==1)
+  {
+    if (repinta == 0) 
+    { 
+      repinta = 1;
+    }
+    if (mouseX>posx-tamany && mouseX<posx+tamany && mouseY>posy-tamany && mouseY<posy+tamany)
+    {
+      sonido_punto.trigger();
+      punts+=1;
+    }
+      else
+      {
+      sonido_game_over.trigger();
+      musica_fondo.pause();
+      jugar=0;      
+      //Escriu Game Over
+      fill(255,0,0);
+      textAlign(CENTER);
+      textSize(35);
+      text("GAME OVER: " + punts + "puntos en " +millis()/1000+ " segundos ", 380, 300);
+      fill(255);
+      textAlign(CENTER);
+      textSize(20);  
+      text("PRESIONA CUALQUIER TECLA PARA VOLVER A JUGAR",380,590);   
+            
+  }
+  }
+}
+void keyPressed() //metodo evaluador de acciones por teclado
+{
+musica_fondo.play();
+sonido_punto.setGain(-30);
+sonido_game_over.setGain(-10);
+musica_fondo.setGain(-20);
+musica_fondo.loop();
+setup();
+posx = 0;
+posy = 0;
+punts = 0;
+repinta = 1;
+tamany = 50;
+jugar = 1;
+cont=5;
+n2cont=10;
+tcont=0;
+n2tamany = 30;
+}
