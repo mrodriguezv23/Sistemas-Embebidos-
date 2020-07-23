@@ -1,0 +1,156 @@
+//UNIVERSIDAD TECNICA DEL NORTE
+//FICA/CITEL-CIERCOM
+//SISTEMAS EMBEBIDOS LAB6
+
+
+#include <Average.h> //libreria para calcular la moda, es decir la clase que mas se repite
+#include "datos.h"//archivo local
+
+//{5,5 2,6 4,4 1,2}
+
+double dato[co];
+int k = 3; // valor de k vecinos
+double aux[90]; //almacena distancias calculadas
+int clases[fi]; // almacena tipos de pisadas
+double kPrimeros[3];  //varible que guarda las tres distancias mas cercanas
+int kClases[3];       //variable que guarda las clases de esas 3 distancias
+int clase = 0;        //variable que guarda el tipo de pisada que knn selecciono
+String str;           //variable que guarda el nuevo dato
+int mod = 0;
+
+void setup() {
+  Serial.begin(9600);
+  delay(1000);
+  Serial.println("===============================================");
+  Serial.println("===         Clasificacion con KKN           ===");
+  Serial.println("===============================================");
+  delay(500);
+}
+
+
+void loop() {
+  // recibir los datos a clasificar
+  if (Serial.available()) {
+
+    // recibir una cadena hasta que se tenga el '\n'
+    String str = Serial.readStringUntil('\n');
+    extraeDatos(str, dato, "{,}");
+    buscaPunto(aux, dato, matriz, fi, co); // busca los puntos de la BDD para calcular luego la distancia
+    Serial.println("=====================================");
+    Serial.println("DISTANCIAS ORDENADAS DE MENOR A MAYOR");
+    Serial.println("=====================================");
+    ordena(aux, clases, clasesNo, fi); //ordena las distancias al nuevo dato
+    Serial.println("=====================================");
+    Serial.println("k="+String(k)+" distancias mas cortas");
+    Serial.println("=====================================");
+    extraeKvecinos(aux, kPrimeros, clases, kClases, k); //extrae los 3 vecinos mas cercanos
+    mod = moda(kClases, k); //calcula la moda
+    Serial.print("Etiqueta    ");
+    Serial.println(mod);
+
+  }
+
+}
+
+
+
+void extraeDatos(String str, double dato[], char dlm[]) {
+
+  String auxstr = "";
+  int posdlm[5], tamstr = 0;
+  int i = 0, j = 0;
+
+  // buscar caracteres de identificacion
+  posdlm[0] = str.indexOf(dlm[0]); // (
+  posdlm[1] = str.indexOf(dlm[1]); // ,
+  posdlm[2] = str.indexOf(dlm[1], posdlm[1] + 1); // ,
+  posdlm[3] = str.indexOf(dlm[1], posdlm[2] + 1); // ,
+  posdlm[4] = str.indexOf(dlm[2]); // )
+
+  for (j = 0; j < co; j++) {
+    // extraer datos numericos
+    for (i = posdlm[j] + 1; i < posdlm[j + 1]; i++) {
+      auxstr = auxstr + str[i];
+    }
+
+    //convertir a double
+    int y = auxstr.length();
+    char buf[y + 1];
+    auxstr.toCharArray(buf, y + 1);
+    dato[j] = atof(buf);
+
+    //Serial.println(dato[j],3);
+    auxstr = ""; // reset del auxiliar
+  }
+}
+
+void buscaPunto(double aux[], double p1[], float (*matriz)[4], int fi, int co) {
+  int f = 0;
+  int c = 0;
+  int p2[co]; //creo un vector que almacena los 14 datos que corresponden a un punto
+  for (f = 0; f < fi; f++) { //recorre el numero de filas de entrenamiento.h
+    for (c = 0; c < co; c++) { //recorre el numero de columnaas de entrenamiento.h
+      p2[c] = matriz[f][c]; // recorre las 14 columnas en la misma fila y se almacena en el punto 2
+    }
+    aux[f] = distancia(co, p1, p2); //se envia al metodo distancia el numero de columnas, el punto 1 y el punto 2 que se encontro aqui
+    // se calcula la distancia entre los puntos (14 dimensiones)
+  }
+  for (int i = 0; i < 90; i++) {
+    Serial.println(aux[i]); //imprime distancias en desorden
+  }
+}
+
+double distancia(int co, double dato[], int p2[]) {
+  double suma = 0;
+  int c = 0;
+  for (c = 0; c < co; c++) {
+    suma = pow( dato[c] - p2[c], 2 ) + suma; //se resta y eleva al cuadrado entre nuevo dato y punto de la bdd
+  }
+  return sqrt(suma); //se devuelve el valor de la distancia, calculando la raiz de suma
+}
+
+
+void ordena(double* aux, int clases[], int clasesNo[], int fi) {
+  int i = 1, j = 1, f = 1, temp[2];
+  for (i = 0; i < fi; i++) {
+    clases[i] = clasesNo[i];//las 90 
+  }
+
+
+  for (i = 1; (i <= fi) && f; i++) {
+    f = 0;
+    for (j = 0; j < (fi - 1); j++) {
+      if (aux[j + 1] < aux[j]) {
+        temp[0] = aux[j]; temp[1] = clases[j];
+        aux[j] = aux[j + 1]; clases[j] = clases[j + 1];
+        aux[j + 1] = temp[0];  clases[j + 1] = temp[1];
+        f = 1;
+      }
+    }
+  }
+  for (int i = 0; i < 90; i++) {
+    Serial.println(aux[i]);
+  }
+}
+
+void extraeKvecinos(double* aux, double kPrimeros[], int clases[], int kClases[], int k) {
+  for (int i = 0; i < k; i++) {
+    kPrimeros[i] = aux[i];
+    kClases[i] = clases[i];
+  }
+  for (int i = 0; i < k; i++) {
+    Serial.println(aux[i]);
+  }
+}
+
+
+
+int moda(int* kClases, int k ) {
+  Average<double> ave(3);
+  for (int i = 0; i < 3; i++) {
+    int num = kClases[i];
+    ave.push(num);
+  }
+  int   moda = ave.mode();
+  return moda;
+}
