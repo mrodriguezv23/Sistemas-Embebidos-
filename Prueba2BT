@@ -1,0 +1,268 @@
+//UNIVERSIDAD TECNICA DEL NORTE
+//FICA CITEL CIERCOM
+//Estudiante: Rodriguez Monica
+//Prueba 2Bimestre-Sistemas Embebidos
+
+#include "datos.h"
+float prom1A;
+float prom1B;
+float prom1C;
+//promedios de segunda etiqueta
+float prom2A;
+float prom2B;
+float prom2C;
+//promedios de tercera etiqueta
+float prom3A;
+float prom3B;
+float prom3C;
+//promedios de cuarta etiqueta
+float prom4A;
+float prom4B;
+float prom4C;
+//vector para guardar las distancias
+float distancia[157];
+//distancias MX
+float distancia1=0;
+float distancia2=0;
+float distancia3=0;
+float distancia4=0;
+//vector para guardar datos entre o y 1
+float temp[157];
+//matriz de datos nueva
+float matriz2[48][4];
+//datos a evaluar
+String dato;
+//vector para los nuevos datos ingresados
+float ext[3];
+//contador de los nuevos datos ing
+int cont=0;
+//nuevo vector distancia 
+float distE[48];
+//para el met. etiqueta
+float distanciaF=0;
+float distancia_menor=20000;
+int etiquetaf=0;
+int fil=0;
+int col=0;
+int cont2=0;
+void setup() 
+{
+
+Serial.begin(9600);
+for (int i=0;i<157;i++)
+  {
+  if (matriz[i][3]==1)
+    {
+    prom1A=prom1A+matriz[i][0];
+    prom1B=prom1B+matriz[i][1];
+    prom1C=prom1C+matriz[i][2];
+    }
+  if (matriz[i][3]==2)
+    {
+    prom2A=prom2A+matriz[i][0];
+    prom2B=prom2B+matriz[i][1];
+    prom2C=prom2C+matriz[i][2];
+    }
+  if (matriz[i][3]==3)
+    {
+    prom3A=prom3A+matriz[i][0];
+    prom3B=prom3B+matriz[i][1];
+    prom3C=prom3C+matriz[i][2];
+    }
+  if (matriz[i][3]==4)
+    {
+    prom4A=prom4A+matriz[i][0];
+    prom4B=prom4B+matriz[i][1];
+    prom4C=prom4C+matriz[i][2];
+    } 
+  }
+prom1A=prom1A/40;
+prom1B=prom1B/40;
+prom1C=prom1C/40;
+
+prom2A=prom2A/39;
+prom2B=prom2B/39;
+prom2C=prom2C/39;
+
+prom3A=prom3A/39;
+prom3B=prom3B/39;
+prom3C=prom3C/39;
+
+prom4A=prom4A/39;
+prom4B=prom4B/39;
+prom4C=prom4C/39;
+
+Serial.print(prom1A);
+Serial.print(",");
+Serial.print(prom1B);
+Serial.print(",");
+Serial.println(prom1C);
+
+
+Serial.print(prom2A);
+Serial.print(",");
+Serial.print(prom2B);
+Serial.print(",");
+Serial.println(prom2C);
+
+
+Serial.print(prom3A);
+Serial.print(",");
+Serial.print(prom3B);
+Serial.print(",");
+Serial.println(prom3C);
+
+
+Serial.print(prom4A);
+Serial.print(",");
+Serial.print(prom4B);
+Serial.print(",");
+Serial.println(prom4C);
+
+//Calcular las distancias entre los promedios para cada dato
+for (int j=0;j<157;j++)
+  {
+  if(matriz[j][3]==1)
+    {
+    distancia[j]=sqrt(pow(matriz[j][0]-prom1A,2)+pow(matriz[j][1]-prom1B,2)+pow(matriz[j][2]-prom1C,2));
+    }
+   if(matriz[j][3]==2)
+    {
+    distancia[j]=sqrt(pow(matriz[j][0]-prom2A,2)+pow(matriz[j][1]-prom2B,2)+pow(matriz[j][2]-prom2C,2));
+    }
+   if(matriz[j][3]==3)
+    {
+    distancia[j]=sqrt(pow(matriz[j][0]-prom3A,2)+pow(matriz[j][1]-prom3B,2)+pow(matriz[j][2]-prom3C,2));
+    }
+   if(matriz[j][3]==4)
+    {
+    distancia[j]=sqrt(pow(matriz[j][0]-prom4A,2)+pow(matriz[j][1]-prom4B,2)+pow(matriz[j][2]-prom4C,2));
+    }
+Serial.println(distancia[j]); 
+  }
+//Encontrar distancia mayor
+for(int x=0;x<157;x++)
+  {
+  if (matriz[x][3]==1)
+    {
+    if (distancia[x]>distancia1)
+      {
+      distancia1=distancia[x];
+      }
+    }
+
+    if (matriz[x][3]==2)
+    {
+    if (distancia[x]>distancia2)
+      {
+      distancia2=distancia[x];
+      }
+    }
+
+      if (matriz[x][3]==3)
+    {
+    if (distancia[x]>distancia3)
+      {
+      distancia3=distancia[x];
+      }
+    }
+
+      if (matriz[x][3]==4)
+    {
+    if (distancia[x]>distancia4)
+      {
+      distancia4=distancia[x];
+      }
+    }
+  
+  }
+Serial.println("distancias MX");
+Serial.println(distancia1);
+Serial.println(distancia2);
+Serial.println(distancia3);
+Serial.println(distancia4);
+//valores entre cero y uno
+Serial.println("DATOS 1 y 0");
+for (int y=0;y<157;y++)
+  {
+  if(matriz[y][3]==1)
+    {
+    temp[y]=distancia[y]/distancia1;
+    }
+
+    if(matriz[y][3]==2)
+    {
+    temp[y]=distancia[y]/distancia2;
+    }
+
+      if(matriz[y][3]==3)
+    {
+    temp[y]=distancia[y]/distancia3;
+    }
+
+      if(matriz[y][3]==4)
+    {
+    temp[y]=distancia[y]/distancia4;
+    }
+Serial.println(temp[y]);
+  }
+
+//Definir nueva matriz 
+for (int z=0;z<157;z++)
+  {
+   if (temp[z]>0.4&&temp[z]<0.65)
+   {
+  for (int m=0;m<4;m++)
+      {
+      matriz2[cont2][m]=matriz[z][m];
+      Serial.print(matriz2[cont2][m]);
+      Serial.print(",");
+      }
+  Serial.println(" ");
+  cont2++;
+  Serial.println(cont2);
+  }
+}
+Serial.println(" ");
+Serial.println(" Ingrese datos 3 ");
+}
+
+void loop() 
+{
+
+if(Serial.available()>0&&cont<3)
+  {
+  ext[cont]=Serial.parseInt();
+  cont ++;
+  Serial.println(" ");
+  }
+  if(cont==3)
+  {
+  Serial.println("El dato ingresado es: ");
+  Serial.print(ext[0]);
+  Serial.print(",");
+  Serial.print(ext[1]);
+  Serial.print(",");
+  Serial.println(ext[2]);
+ // etiqueta();
+  for(;fil<48;fil++)
+  {
+  for (col=0;col<3;col++)
+    {
+    //encontrar distancia
+   distanciaF=distanciaF+pow(matriz2[fil][col]-ext[col],2);
+    }
+  distanciaF=sqrt(distanciaF);
+  Serial.println(distanciaF);
+  if(distanciaF<distancia_menor)
+    {
+    distancia_menor=distanciaF;
+    //etiqueta
+    etiquetaf=matriz2[fil][3];
+    }
+  }
+  Serial.print("Los datos ingresados corresponden a la etiqueta: ");
+  Serial.println(etiquetaf);
+  cont=0;
+  }
+}
